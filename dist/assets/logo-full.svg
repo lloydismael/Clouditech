@@ -1,0 +1,8 @@
+<svg width="960" height="240" viewBox="0 0 960 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Clouditech">
+  <g transform="translate(22 18) scale(.4)">
+    <path d="M376 150C344 117 300 96 250 96C157 96 82 168 82 256C82 344 157 416 250 416C300 416 344 395 376 362" stroke="#1769E0" stroke-width="64" stroke-linecap="round"/>
+    <path d="M250 256H390" stroke="#10243E" stroke-width="32" stroke-linecap="round"/>
+    <circle cx="250" cy="256" r="24" fill="#12B8A6"/><circle cx="400" cy="256" r="24" fill="#1769E0"/>
+  </g>
+  <text x="238" y="155" font-family="Inter,Arial,sans-serif" font-size="82" font-weight="700" letter-spacing="-4" fill="#10243E">Clouditech</text>
+</svg>
