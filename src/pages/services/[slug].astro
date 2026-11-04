@@ -1,0 +1,103 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services, journey, type Service } from '../../data/services';
+import { projects } from '../../data/projects';
+import { bookingHref } from '../../data/site';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+interface Props {
+  service: Service;
+}
+const { service: s } = Astro.props;
+const related = projects.filter((p) => p.services.includes(s.slug));
+const others = services.filter((o) => o.slug !== s.slug);
+---
+
+<Layout
+  title={`${s.title} | Clouditech Azure Services`}
+  description={`${s.headline} ${s.summary}`}
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: s.title,
+    description: s.summary,
+    serviceType: s.title,
+    areaServed: 'PH',
+    provider: { '@type': 'Organization', name: 'Clouditech Information Technology Solutions', url: 'https://clouditechsolution.com' },
+  }]}
+>
+  <PageHeader eyebrow={s.title} title={s.headline} intro={s.summary}>
+    <a slot="before" href="/services/" class="inline-flex items-center gap-2 text-sm font-semibold text-muted no-underline hover:text-primary"><Icon name="arrowLeft" class="size-4" />All services</a>
+    <div class="mt-9 flex flex-wrap gap-3">
+      <a href={bookingHref} class="btn btn-primary">Talk about {s.short} <Icon name="arrowRight" /></a>
+      {related[0] && <a href={`/projects/${related[0].slug}/`} class="btn btn-secondary">View related project</a>}
+    </div>
+  </PageHeader>
+
+  <section class="section-pad !pt-8" aria-labelledby="outcomes">
+    <div class="wrap grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+      <div class="card" data-reveal>
+        <h2 id="outcomes" class="text-2xl font-bold">What you can expect</h2>
+        <ul class="mt-6 grid gap-4">
+          {s.outcomes.map((o) => (
+            <li class="flex gap-3">
+              <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-cyan/15 text-cyan-text"><Icon name="check" class="size-4" strokeWidth={2.5} /></span>
+              <span>{o}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="card" data-reveal="1">
+        <h2 class="text-2xl font-bold">Deliverables</h2>
+        <ul class="prose-ct">{s.deliverables.map((d) => <li>{d}</li>)}</ul>
+        <h3 class="mt-8 font-mono text-xs font-semibold uppercase tracking-[0.14em] text-muted">Typical stack</h3>
+        <ul class="mt-3 flex flex-wrap gap-1.5">{s.stack.map((t) => <li class="badge">{t}</li>)}</ul>
+      </div>
+    </div>
+
+    <div class="wrap mt-14" data-reveal>
+      <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-muted">Where this fits in your cloud journey</h2>
+      <ol class="mt-5 flex flex-wrap gap-2">
+        {journey.map((stage) => (
+          <li class:list={['rounded-full border px-4 py-2 text-sm font-semibold', stage === s.stage ? 'border-primary bg-primary text-white' : 'border-line bg-white/80 text-muted']} aria-current={stage === s.stage ? 'step' : undefined}>{stage}</li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section-pad bg-white/50" aria-labelledby="related-title">
+      <div class="wrap">
+        <h2 id="related-title" class="text-3xl font-bold" data-reveal>Related projects</h2>
+        <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {related.map((p, i) => <ProjectCard project={p} index={i} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section-pad" aria-labelledby="other-title">
+    <div class="wrap">
+      <h2 id="other-title" class="text-2xl font-bold" data-reveal>Other services</h2>
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {others.map((o, i) => (
+          <li data-reveal={String(i)}>
+            <a href={`/services/${o.slug}/`} class="card card-hover icon-anim flex items-center gap-3 !p-4 no-underline">
+              <span class="icon-tile !size-10"><Icon name={o.icon} /></span>
+              <span class="font-display font-semibold text-ink">{o.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title={`Ready to talk about ${s.short}?`} cta={`Talk about ${s.short}`} />
+</Layout>
