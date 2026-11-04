@@ -26,6 +26,12 @@ npm run preview   # serve the production build
 - `src/styles/global.css`: design tokens (`@theme`), utilities, motion system
 - `public/`: static assets, `staticwebapp.config.json` (CSP, headers, 404), logos, icons
 
+## Project previews
+
+Project URLs, preview images, and featured visibility are configured in `src/data/projects.ts`. The homepage shows up to four featured projects; all projects remain searchable on the portfolio page. Previews and “Visit live site” links open the configured URL in a new tab, while case-study links stay on this site.
+
+`ProjectPreview.astro` shares an uncropped, responsive browser-style preview between cards and case studies. Store screenshots in `public/assets/projects/` at 1440 × 1000 pixels, capturing only public pages without credentials or private data. Optimize delivery images as WebP; PNG captures can be kept as originals. Use `previewLabel: 'Illustrative preview'` for concept artwork instead of a real screenshot. The Learning & Development Portal uses a labeled illustration because its live URL returned “403 — web app stopped” when checked on November 5, 2026; replace it with an approved screenshot when available.
+
 ## Brand and design system ("Liquid Glass Cloud")
 
 - Canvas `#f5f8fc`, ink `#0e1e36`, primary blue `#1769e0`, operational cyan `#0b8f83` (use `#08766d` for cyan text to meet WCAG AA)

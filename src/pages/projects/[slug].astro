@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import BeforeAfter from '../../components/BeforeAfter.astro';
+import ProjectPreview from '../../components/ProjectPreview.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { projects, type Project } from '../../data/projects';
 import { services } from '../../data/services';
@@ -29,6 +30,7 @@ const jsonLd = [
     description: p.outcome,
     creator: { '@type': 'Organization', name: 'Clouditech Information Technology Solutions' },
     keywords: p.stack.join(', '),
+    ...(p.url ? { url: p.url } : {}),
   },
   {
     '@context': 'https://schema.org',
@@ -50,9 +52,22 @@ const jsonLd = [
       <div><dt class="font-mono text-xs uppercase tracking-[0.14em] text-muted">Highlight</dt><dd class="mt-1 font-semibold">{p.highlight}</dd></div>
     </dl>
     <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tech stack">{p.stack.map((t) => <li class="badge">{t}</li>)}</ul>
+    {p.url && (
+      <a href={p.url} class="btn btn-primary mt-6" target="_blank" rel="noopener noreferrer" aria-label={`Visit the live ${p.title} site (opens in a new tab)`}>
+        Visit live site <Icon name="arrowUpRight" class="size-4" />
+      </a>
+    )}
   </PageHeader>
 
   <article class="section-pad !pt-8">
+    {p.image && (
+      <section class="wrap mb-12" aria-labelledby="preview-title">
+        <h2 id="preview-title" class="mb-5 text-2xl font-bold">Project preview</h2>
+        <div class="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-line shadow-lg">
+          <ProjectPreview project={p} />
+        </div>
+      </section>
+    )}
     <div class="wrap grid gap-6 lg:grid-cols-3">
       <section class="card" data-reveal="0" aria-labelledby="problem">
         <span class="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-[#b4472b]">01 · Problem</span>

@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+const { project: p } = Astro.props;
+const host = p.url ? new URL(p.url).hostname : '';
+const Tag = p.url ? 'a' : 'div';
+---
+
+<Tag
+  href={p.url}
+  target={p.url ? '_blank' : undefined}
+  rel={p.url ? 'noopener noreferrer' : undefined}
+  aria-label={p.url ? `Preview ${p.title} — visit live site (opens in a new tab)` : undefined}
+  class="project-preview-link block overflow-hidden text-ink no-underline"
+  style={`--accent:${p.accent}`}
+>
+  <div class="project-preview">
+    <div class="preview-toolbar" aria-hidden="true">
+      <span class="preview-dots"><i></i><i></i><i></i></span>
+      <span class="preview-address">{host || p.category}</span>
+      {p.url && <Icon name="arrowUpRight" class="size-3.5 shrink-0 text-muted" />}
+    </div>
+    <div class="preview-screen">
+      {p.image ? (
+        <img src={p.image} alt={`${p.title} ${p.previewLabel ? 'illustration' : 'website screenshot'}`} loading="lazy" decoding="async" width="1440" height="1000" />
+      ) : (
+        <div class="preview-placeholder">
+          <Icon name="code" class="size-10" />
+          <span>{p.title}</span>
+          <span class="text-sm font-normal opacity-80">{p.highlight}</span>
+        </div>
+      )}
+    </div>
+    <div class="preview-caption">
+      <span>{p.previewLabel || (p.image ? 'Website preview' : p.category)}</span>
+      {p.url && <span class="inline-flex items-center gap-1">Open site <Icon name="arrowUpRight" class="size-3.5" /></span>}
+    </div>
+  </div>
+</Tag>
+
+<style>
+  .project-preview { background: #f5f8fc; }
+  .preview-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    background: white;
+  }
+  .preview-dots { display: flex; gap: 0.25rem; flex-shrink: 0; }
+  .preview-dots i { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #cbd5e1; }
+  .preview-address { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 0.65rem; color: var(--color-muted); }
+  .preview-screen { aspect-ratio: 36 / 25; overflow: hidden; }
+  .preview-screen img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .preview-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; height: 100%; padding: 1.5rem; text-align: center; font-weight: 700; color: white; background: linear-gradient(135deg, var(--accent), #0e1e36); }
+  .preview-caption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; border-top: 1px solid var(--color-line); color: var(--color-muted); font-size: 0.7rem; }
+  .project-preview-link:hover .preview-caption { color: var(--color-primary); }
+  a.project-preview-link:focus-visible { outline: 3px solid var(--color-primary); outline-offset: -3px; }
+</style>

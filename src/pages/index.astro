@@ -9,7 +9,7 @@ import CtaBand from '../components/CtaBand.astro';
 import { bookingHref, stats, technologies, testimonials } from '../data/site';
 import { projects } from '../data/projects';
 
-const featured = projects.filter((p) => p.featured).slice(0, 3);
+const featured = projects.filter((p) => p.featured).slice(0, 4);
 const headline = ['Your', 'Azure,', 'running', 'smoothly,'];
 
 const reasons = [
@@ -95,7 +95,7 @@ const process = [
         <SectionHeading id="projects-title" eyebrow="Selected work" title="Work that solves real operating problems." intro="Each project starts with a real problem and ends with a platform the team can actually run." />
         <a href="/projects/" class="btn btn-secondary" data-reveal>View all projects <Icon name="arrowRight" /></a>
       </div>
-      <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
         {featured.map((p, i) => <ProjectCard project={p} index={i} />)}
       </div>
     </div>

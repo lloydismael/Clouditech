@@ -20,6 +20,11 @@ export interface Project {
   after: string[];
   // Add only verified figures. Metric tiles render only when this array has entries.
   metrics?: ProjectMetric[];
+  // Live deployment of the project. Rendered as a "Visit live site" link when present.
+  url?: string;
+  // Preview image shown as the card cover. Falls back to a generated SVG when absent.
+  image?: string;
+  previewLabel?: string;
   featured: boolean;
   accent: string;
 }
@@ -47,6 +52,8 @@ export const projects: Project[] = [
     ],
     before: ['Requests scattered across email and chat', 'No ownership or status tracking', 'Reporting compiled manually'],
     after: ['Single request portal with routing', 'Role-based workflow with clear owners', 'Live dashboards, no manual reports'],
+    url: 'https://esgrequesthub.com/',
+    image: '/assets/projects/request-hub.webp',
     featured: true,
     accent: '#1769e0',
   },
@@ -68,6 +75,8 @@ export const projects: Project[] = [
     results: ['Repeatable quotes from shared pricing rules', 'Less manual spreadsheet work', 'Faster turnaround on licensing requests'],
     before: ['Spreadsheet-based quoting', 'Inconsistent numbers between preparers', 'Slow turnaround'],
     after: ['Central pricing engine', 'Same inputs → same quote', 'Faster quote preparation'],
+    url: 'https://azurecsp.clouditechsolution.com/',
+    image: '/assets/projects/azure-csp-calculator.webp',
     featured: true,
     accent: '#0b8f83',
   },
@@ -89,6 +98,9 @@ export const projects: Project[] = [
     results: ['Clear learning paths instead of loose files', 'Visible progress for learners and leads', 'Easier onboarding for new team members'],
     before: ['Files in shared folders', 'No completion visibility', 'Ad-hoc onboarding'],
     after: ['Structured learning paths', 'Progress tracking per learner', 'Repeatable onboarding'],
+    url: 'https://ldp.clouditechsolution.com/',
+    image: '/assets/projects/learning-portal.svg',
+    previewLabel: 'Illustrative preview',
     featured: true,
     accent: '#6e56cf',
   },
@@ -110,5 +122,40 @@ export const projects: Project[] = [
     after: ['One-step content copy', 'Consistent output every time'],
     featured: false,
     accent: '#ff8a4c',
+  },
+  {
+    slug: 'seller-development-request-form',
+    title: 'Seller Development Request Form',
+    category: 'Request workflow',
+    services: ['azure-devops', 'managed-it'],
+    outcome: 'A guided intake form that captures seller development requests in one place and routes them for approval.',
+    highlight: 'Guided intake & approval',
+    stack: ['Intake form', 'Approval workflow', 'Azure hosting'],
+    problem:
+      'Seller development requests arrived through email and chat with missing details, so the team chased information and rebuilt the same request by hand before anything could be actioned.',
+    solution: [
+      'Designed a step-by-step request form with required fields and validation',
+      'Built a submission workflow with status tracking and an admin review view',
+      'Hosted the app on Azure with automated deployments from source control',
+    ],
+    results: [
+      'Every request captured with complete, consistent details',
+      'Requests triaged and approved from one dashboard',
+      'Less back-and-forth chasing missing information',
+    ],
+    before: [
+      'Requests sent by email and chat',
+      'Missing details and manual rework',
+      'No visibility of approval status',
+    ],
+    after: [
+      'Guided form with required fields',
+      'Structured review and approval flow',
+      'Clear status for every request',
+    ],
+    url: 'https://sellerdevelopmentrf.clouditechsolution.com/',
+    image: '/assets/projects/seller-development-request-form.webp',
+    featured: true,
+    accent: '#c2410c',
   },
 ];
