@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ServicesExplorer from '../../components/ServicesExplorer.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services } from '../../data/services';
+---
+
+<Layout
+  title="Azure Services: Migration, DevOps, Managed IT & AI | Clouditech"
+  description="Cloud migration, Azure DevOps automation, managed cloud operations, AI and automation, and support from Clouditech, a founder-led Azure partner."
+  jsonLd={services.map((s) => ({
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: s.title,
+    description: s.summary,
+    provider: { '@type': 'Organization', name: 'Clouditech Information Technology Solutions' },
+    url: `https://clouditechsolution.com/services/${s.slug}/`,
+  }))}
+>
+  <PageHeader eyebrow="Services" title="One partner for your whole Azure journey." intro="Start anywhere in the journey. Every service is delivered as code, documented, and designed to be run by your team or ours." />
+
+  <section class="section-pad !pt-4" aria-labelledby="all-services">
+    <div class="wrap">
+      <h2 id="all-services" class="sr-only">All services</h2>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {services.map((s, i) => (
+          <div data-reveal={String(i % 3)}>
+            <a href={`/services/${s.slug}/`} class="card card-hover group flex h-full flex-col no-underline">
+              <span class="icon-tile"><Icon name={s.icon} /></span>
+              <h3 class="mt-5 text-xl font-bold">{s.title}</h3>
+              <p class="mt-2 font-semibold text-ink">{s.headline}</p>
+              <p class="mt-2 flex-1 text-[0.95rem] text-muted">{s.summary}</p>
+              <span class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">Learn more <Icon name="arrowRight" class="size-4 transition-transform duration-300 group-hover:translate-x-1" /></span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-white/50" aria-labelledby="explorer-title">
+    <div class="wrap">
+      <div class="max-w-3xl" data-reveal>
+        <p class="eyebrow">Compare</p>
+        <h2 id="explorer-title" class="mt-4 text-3xl font-bold sm:text-4xl">See outcomes and deliverables side by side.</h2>
+      </div>
+      <ServicesExplorer />
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>

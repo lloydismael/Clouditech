@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro';
+import { site, nav } from '../data/site';
+import { services } from '../data/services';
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-white/60">
+  <div class="wrap grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+    <div>
+      <a href="/" class="flex items-center gap-2.5 font-display text-lg font-bold text-ink no-underline" aria-label="Clouditech home">
+        <img src="/assets/logo-mark.svg" width="32" height="32" alt="" loading="lazy" />
+        <span>Clouditech</span>
+      </a>
+      <p class="mt-4 max-w-xs text-sm text-muted">{site.tagline}</p>
+    </div>
+    <div>
+      <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-muted">Services</h2>
+      <ul class="mt-4 grid gap-2 text-sm">
+        {services.map((s) => <li><a class="text-ink no-underline hover:text-primary" href={`/services/${s.slug}/`}>{s.title}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-muted">Company</h2>
+      <ul class="mt-4 grid gap-2 text-sm">
+        {nav.map((n) => <li><a class="text-ink no-underline hover:text-primary" href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <h2 class="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-muted">Contact</h2>
+      <ul class="mt-4 grid gap-3 text-sm">
+        <li><a class="inline-flex items-center gap-2 text-ink no-underline hover:text-primary" href={`mailto:${site.email}`}><Icon name="mail" class="size-4 text-primary" />{site.email}</a></li>
+        <li><a class="inline-flex items-center gap-2 text-ink no-underline hover:text-primary" href={site.phoneHref}><Icon name="phone" class="size-4 text-primary" />{site.phone}</a></li>
+        <li class="inline-flex items-center gap-2 text-ink"><Icon name="mapPin" class="size-4 text-primary" />{site.location}</li>
+        <li><a class="inline-flex items-center gap-2 text-ink no-underline hover:text-primary" href={site.github} target="_blank" rel="noopener noreferrer"><Icon name="github" class="size-4 text-primary" />GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap flex flex-col gap-2 border-t border-line py-6 text-xs text-muted sm:flex-row sm:justify-between">
+    <span>© {year} {site.legalName}</span>
+    <span>{site.registration}</span>
+  </div>
+</footer>

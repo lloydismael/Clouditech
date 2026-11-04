@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import PageHeader from '../components/PageHeader.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site, technologies } from '../data/site';
+
+const principles = [
+  { icon: 'user', title: 'Direct expertise', text: 'Engagements are founder-led. The person scoping your work is the person building it.' },
+  { icon: 'code', title: 'Transparent by design', text: 'Infrastructure, pipelines, and decisions are documented and versioned, so you are never locked in.' },
+  { icon: 'shieldPulse', title: 'Long-term accountability', text: 'We stay after launch to monitor, maintain, and improve the platform as your business changes.' },
+] as const;
+---
+
+<Layout
+  title="About Clouditech | Founder-led Azure Managed Services in Makati"
+  description="Clouditech is a founder-led Azure managed services provider based in Makati City, helping startups and growing businesses build and run secure cloud environments."
+>
+  <PageHeader eyebrow="About Clouditech" title="Direct expertise. Long-term accountability." intro="Clouditech is an Azure managed services provider based in Makati City, helping startups and growing businesses build and operate cloud environments with fewer surprises." />
+
+  <section class="section-pad !pt-4" aria-labelledby="story-title">
+    <div class="wrap grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+      <div class="card" data-reveal>
+        <h2 id="story-title" class="text-2xl font-bold">Why we exist</h2>
+        <div class="prose-ct">
+          <p>Growing teams need a cloud platform that is secure, affordable, and easy to change, but they rarely have a dedicated platform team to build and run it.</p>
+          <p>Clouditech fills that gap. We combine hands-on architecture and automation experience with a practical understanding of operations, security, and cost, and we stay accountable after go-live.</p>
+          <p>Engagements are led by {site.founder}, so you always work directly with a senior engineer.</p>
+        </div>
+      </div>
+      <dl class="grid content-start gap-4 sm:grid-cols-2 lg:grid-cols-1">
+        <div class="card flex flex-col" data-reveal="1">
+          <dt class="order-2 mt-1 text-sm text-muted">Hands-on cloud and IT engineering</dt>
+          <dd class="font-display text-4xl font-extrabold text-gradient" data-count="9" data-suffix="+ years">9+ years</dd>
+        </div>
+        <div class="card flex flex-col" data-reveal="2">
+          <dt class="order-2 mt-1 text-sm text-muted">Philippines-based, supporting remote clients</dt>
+          <dd class="font-display text-3xl font-extrabold">Makati City</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section-pad bg-white/50" aria-labelledby="principles-title">
+    <div class="wrap">
+      <h2 id="principles-title" class="text-3xl font-bold sm:text-4xl" data-reveal>How we work with you</h2>
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {principles.map((p, i) => (
+          <div data-reveal={String(i)}>
+            <article class="card card-hover h-full">
+              <span class="icon-tile"><Icon name={p.icon} /></span>
+              <h3 class="mt-5 text-xl font-bold">{p.title}</h3>
+              <p class="mt-2 text-muted">{p.text}</p>
+            </article>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad" aria-labelledby="tools-title">
+    <div class="wrap">
+      <h2 id="tools-title" class="text-3xl font-bold" data-reveal>Tools and platforms we use</h2>
+      <ul class="mt-8 flex flex-wrap gap-2" data-reveal>
+        {technologies.map((t) => <li class="badge !px-4 !py-2 !text-sm">{t}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>

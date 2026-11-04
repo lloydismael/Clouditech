@@ -1,0 +1,51 @@
+---
+import Icon from './Icon.astro';
+import { bookingHref, site } from '../data/site';
+
+interface Props {
+  title?: string;
+  text?: string;
+  cta?: string;
+}
+const {
+  title = 'Let’s map your next move on Azure.',
+  text = 'Bring the current state, the next project, or the problem keeping your team busy. The first conversation is free and focused on the most useful next step.',
+  cta = 'Start your cloud roadmap',
+} = Astro.props;
+---
+
+<section class="section-pad !pt-8" aria-labelledby="cta-title">
+  <div class="wrap">
+    <div class="cta relative isolate overflow-hidden rounded-[2rem] px-7 py-14 text-white sm:px-14 sm:py-20" data-reveal>
+      <div class="grid items-center gap-10 lg:grid-cols-[1.4fr_1fr]">
+        <div>
+          <p class="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-sky">Start a conversation</p>
+          <h2 id="cta-title" class="mt-4 text-3xl font-bold !text-white sm:text-4xl">{title}</h2>
+          <p class="mt-4 max-w-xl text-lg text-white/80">{text}</p>
+        </div>
+        <div class="flex flex-col gap-4 lg:items-end">
+          <a href={bookingHref} class="btn btn-light !min-h-12 !px-6 !text-base">{cta} <Icon name="arrowRight" /></a>
+          <a href={`mailto:${site.email}`} class="inline-flex items-center gap-2 text-sm text-white/80 underline-offset-4 hover:text-white hover:underline"><Icon name="mail" class="size-4" />{site.email}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    background:
+      radial-gradient(40rem 20rem at 100% 0%, rgb(124 196 255 / 0.35), transparent 60%),
+      radial-gradient(30rem 20rem at 0% 100%, rgb(11 143 131 / 0.45), transparent 60%),
+      linear-gradient(135deg, #0e1e36, #12346a);
+  }
+  .cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(rgb(255 255 255 / 0.12) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(90deg, transparent, #000);
+  }
+</style>

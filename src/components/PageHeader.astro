@@ -1,0 +1,25 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro?: string;
+}
+const { eyebrow, title, intro } = Astro.props;
+---
+
+<section class="bg-aurora relative overflow-hidden pb-14 pt-36 sm:pb-20 sm:pt-44">
+  <div class="wrap">
+    {Astro.slots.has('before') && <div class="mb-8"><slot name="before" /></div>}
+    <p class="eyebrow page-in">{eyebrow}</p>
+    <h1 class="page-in mt-5 max-w-4xl text-4xl font-extrabold sm:text-5xl lg:text-6xl" style="animation-delay:80ms">
+      <slot name="title">{title}</slot>
+    </h1>
+    {intro && <p class="page-in mt-6 max-w-2xl text-lg text-muted sm:text-xl" style="animation-delay:160ms">{intro}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-in { animation: page-in 800ms var(--ease-out-expo) both; }
+  @keyframes page-in { from { opacity: 0; transform: translateY(14px); } }
+</style>
