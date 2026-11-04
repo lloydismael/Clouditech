@@ -1,0 +1,126 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { projects } from '../../data/projects';
+import { services } from '../../data/services';
+
+const filters = services.filter((s) => projects.some((p) => p.services.includes(s.slug)));
+---
+
+<Layout
+  title="Projects & Case Studies | Clouditech"
+  description="Case studies from Clouditech: Azure platforms, internal tools, and automation built around real operating problems, with problem, solution, and results."
+>
+  <PageHeader eyebrow="Projects" title="Work that moved real operations forward." intro="Filter by service to see how each problem was approached, what was built, and what changed for the team." />
+
+  <section class="section-pad !pt-4" aria-labelledby="portfolio-title">
+    <div class="wrap">
+      <h2 id="portfolio-title" class="sr-only">Project portfolio</h2>
+      <div class="portfolio-controls glass sticky top-20 z-30 flex flex-col gap-4 rounded-2xl p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div role="group" aria-label="Filter by service" class="flex flex-wrap gap-2">
+          <button type="button" class="filter-chip" data-filter="all" aria-pressed="true">All</button>
+          {filters.map((s) => <button type="button" class="filter-chip" data-filter={s.slug} aria-pressed="false">{s.short}</button>)}
+        </div>
+        <label class="relative block sm:w-64">
+          <span class="sr-only">Search projects</span>
+          <Icon name="search" class="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
+          <input type="search" data-search-input placeholder="Search projects" class="min-h-11 w-full rounded-full border border-line bg-white/90 pl-10 pr-4 text-sm outline-none transition-shadow focus:border-primary focus:shadow-[0_0_0_4px_rgb(23_105_224/0.15)]" />
+        </label>
+      </div>
+
+      <p class="mt-6 text-sm text-muted" aria-live="polite" data-count-label>Showing {projects.length} projects</p>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-grid>
+        {projects.map((p, i) => <ProjectCard project={p} index={i % 3} headingLevel="h3" />)}
+      </div>
+
+      <div data-empty hidden class="card mt-6 text-center">
+        <p class="font-display text-lg font-semibold">No projects match that filter yet.</p>
+        <button type="button" class="btn btn-secondary mt-4" data-reset>Clear filters</button>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Have a problem like these?" cta="Get results like these" />
+</Layout>
+
+<style>
+  .filter-chip {
+    min-height: 2.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    background: rgb(255 255 255 / 0.85);
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
+  }
+  .filter-chip:hover { color: var(--color-ink); border-color: rgb(23 105 224 / 0.35); }
+  .filter-chip:active { transform: scale(0.96); }
+  .filter-chip[aria-pressed='true'] { background: var(--color-ink); border-color: var(--color-ink); color: #fff; }
+</style>
+
+<script>
+  function initPortfolio() {
+    const grid = document.querySelector<HTMLElement>('[data-grid]');
+    if (!grid) return;
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    const search = document.querySelector<HTMLInputElement>('[data-search-input]')!;
+    const countLabel = document.querySelector<HTMLElement>('[data-count-label]')!;
+    const empty = document.querySelector<HTMLElement>('[data-empty]')!;
+    const items = Array.from(grid.querySelectorAll<HTMLElement>('[data-services]'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const params = new URLSearchParams(location.search);
+    let active = params.get('service') ?? 'all';
+    if (!chips.some((c) => c.dataset.filter === active)) active = 'all';
+    search.value = params.get('q') ?? '';
+
+    const apply = (animate: boolean) => {
+      const q = search.value.trim().toLowerCase();
+      // FLIP: record positions before the layout change
+      const first = new Map(items.map((el) => [el, el.getBoundingClientRect()]));
+      let shown = 0;
+
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === active)));
+      items.forEach((el) => {
+        const matchService = active === 'all' || el.dataset.services!.split(' ').includes(active);
+        const matchQuery = !q || el.dataset.search!.includes(q);
+        const visible = matchService && matchQuery;
+        const wasHidden = el.hidden;
+        el.hidden = !visible;
+        if (visible) {
+          shown++;
+          el.classList.add('is-visible');
+          if (!animate || reduce) return;
+          if (wasHidden) {
+            el.animate([{ opacity: 0, transform: 'scale(0.96)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: 'cubic-bezier(0.22,1,0.36,1)' });
+          } else {
+            const a = first.get(el)!;
+            const b = el.getBoundingClientRect();
+            const dx = a.left - b.left, dy = a.top - b.top;
+            if (dx || dy) el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 400, easing: 'cubic-bezier(0.22,1,0.36,1)' });
+          }
+        }
+      });
+
+      countLabel.textContent = `Showing ${shown} project${shown === 1 ? '' : 's'}`;
+      empty.hidden = shown > 0;
+
+      const url = new URL(location.href);
+      active === 'all' ? url.searchParams.delete('service') : url.searchParams.set('service', active);
+      q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+      history.replaceState(history.state, '', url);
+    };
+
+    chips.forEach((chip) => chip.addEventListener('click', () => { active = chip.dataset.filter!; apply(true); }));
+    search.addEventListener('input', () => apply(true));
+    document.querySelector('[data-reset]')?.addEventListener('click', () => { active = 'all'; search.value = ''; apply(true); });
+    apply(false);
+  }
+  document.addEventListener('astro:page-load', initPortfolio);
+</script>

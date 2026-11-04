@@ -1,0 +1,166 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { site, bookingHref } from '../data/site';
+import { services } from '../data/services';
+---
+
+<Layout
+  title="Contact Clouditech | Book a Free Azure Assessment"
+  description="Book a free Azure assessment with Clouditech or send us a message about migration, DevOps, managed cloud operations, or AI automation."
+>
+  <PageHeader eyebrow="Contact" title="Let’s map your next move." intro="Tell us where your platform is today and where you want it to be. You’ll get a reply from an engineer, not a sales queue, usually within one business day." />
+
+  <section class="section-pad !pt-4" aria-label="Contact options">
+    <div class="wrap grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <form class="contact-form card grid gap-5 sm:grid-cols-2" method="post" enctype="text/plain" action={`mailto:${site.email}`} novalidate data-reveal>
+        <h2 class="text-2xl font-bold sm:col-span-2">Send a message</h2>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" autocomplete="name" required />
+          <p class="error" id="name-error" hidden>Please enter your name.</p>
+        </div>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+          <p class="error" id="email-error" hidden>Please enter a valid email address.</p>
+        </div>
+        <div class="field">
+          <label for="company">Company <span class="font-normal text-muted">(optional)</span></label>
+          <input id="company" name="company" autocomplete="organization" />
+        </div>
+        <div class="field">
+          <label for="service">I’m interested in</label>
+          <select id="service" name="service">
+            {services.map((s) => <option>{s.title}</option>)}
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="field sm:col-span-2">
+          <label for="message">How can we help?</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+          <p class="error" id="message-error" hidden>Please add a short message.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-4 sm:col-span-2">
+          <button type="submit" class="btn btn-primary submit !min-h-12 !px-6">
+            <span class="label">Send message</span>
+            <span class="spinner" aria-hidden="true"></span>
+            <Icon name="check" class="done !size-5" strokeWidth={2.5} />
+          </button>
+          <p class="text-sm text-muted" role="status" data-status>This opens your email app with the message ready to send.</p>
+        </div>
+      </form>
+
+      <aside class="grid content-start gap-6" aria-label="Other ways to reach us">
+        <div class="card" data-reveal="1">
+          <span class="icon-tile"><Icon name="calendar" /></span>
+          <h2 class="mt-5 text-xl font-bold">Book a free assessment</h2>
+          <p class="mt-2 text-muted">A focused 30-minute call to understand your environment and the most useful next step.</p>
+          <a href={bookingHref} class="btn btn-primary mt-6">Book a free assessment <Icon name="arrowRight" /></a>
+        </div>
+        <div class="card" data-reveal="2">
+          <h2 class="text-xl font-bold">Reach us directly</h2>
+          <ul class="mt-4 grid gap-3">
+            <li><a class="inline-flex items-center gap-3 no-underline text-ink hover:text-primary" href={`mailto:${site.email}`}><span class="icon-tile !size-10"><Icon name="mail" /></span>{site.email}</a></li>
+            <li><a class="inline-flex items-center gap-3 no-underline text-ink hover:text-primary" href={site.phoneHref}><span class="icon-tile !size-10"><Icon name="phone" /></span>{site.phone}</a></li>
+            <li class="inline-flex items-center gap-3"><span class="icon-tile !size-10"><Icon name="mapPin" /></span>{site.location}</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .field { display: grid; gap: 0.4rem; align-content: start; }
+  .field label { font-size: 0.875rem; font-weight: 600; }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    min-height: 2.875rem;
+    border-radius: 0.875rem;
+    border: 1px solid var(--color-line);
+    background: rgb(255 255 255 / 0.9);
+    padding: 0.65rem 0.9rem;
+    font: inherit;
+    outline: none;
+    transition: border-color var(--dur-fast), box-shadow var(--dur-base) var(--ease-out-expo);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgb(23 105 224 / 0.15);
+  }
+  .field [aria-invalid='true'] { border-color: #c2412d; animation: shake 300ms var(--ease-out-expo); }
+  .error { font-size: 0.8rem; color: #b4351f; }
+  @keyframes shake { 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+
+  .submit { position: relative; }
+  .submit .spinner, .submit .done { display: none; }
+  .submit[data-state='loading'] .label, .submit[data-state='done'] .label { display: none; }
+  .submit[data-state='loading'] .spinner {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 999px;
+    border: 2px solid rgb(255 255 255 / 0.4);
+    border-top-color: #fff;
+    animation: spin 700ms linear infinite;
+  }
+  .submit[data-state='done'] { background: var(--color-cyan-text); }
+  .submit[data-state='done'] .done { display: block; animation: pop var(--dur-slow) var(--ease-out-expo); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pop { from { transform: scale(0.4); opacity: 0; } }
+</style>
+
+<script>
+  import { site } from '../data/site';
+
+  function initForm() {
+    const form = document.querySelector<HTMLFormElement>('.contact-form');
+    if (!form) return;
+    const button = form.querySelector<HTMLButtonElement>('.submit')!;
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+
+    const validate = (el: HTMLInputElement | HTMLTextAreaElement) => {
+      const ok = el.checkValidity() && el.value.trim() !== '';
+      const error = document.getElementById(`${el.id}-error`);
+      el.setAttribute('aria-invalid', String(!ok));
+      if (error) {
+        error.hidden = ok;
+        ok ? el.removeAttribute('aria-describedby') : el.setAttribute('aria-describedby', error.id);
+      }
+      return ok;
+    };
+
+    const required = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[required]'));
+    required.forEach((el) => el.addEventListener('blur', () => el.value && validate(el)));
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const invalid = required.filter((el) => !validate(el));
+      if (invalid.length) {
+        invalid[0].focus();
+        status.textContent = 'Please fix the highlighted fields.';
+        return;
+      }
+      const data = new FormData(form);
+      const subject = `Website enquiry: ${data.get('service')}`;
+      const body = [
+        `Name: ${data.get('name')}`,
+        `Email: ${data.get('email')}`,
+        `Company: ${data.get('company') || '-'}`,
+        `Interested in: ${data.get('service')}`,
+        '',
+        String(data.get('message')),
+      ].join('\n');
+
+      button.dataset.state = 'loading';
+      setTimeout(() => {
+        window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        button.dataset.state = 'done';
+        status.textContent = 'Your email app should now be open with the message ready to send. Thank you!';
+      }, 450);
+    });
+  }
+  document.addEventListener('astro:page-load', initForm);
+</script>

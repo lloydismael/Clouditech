@@ -1,0 +1,135 @@
+---
+// Animated node network echoing the C-path logo nodes. Lightweight canvas, no library.
+// Static frame for reduced motion; paused off-screen or in background tabs.
+---
+
+<div class="hero-network pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+  <canvas data-network class="absolute inset-0 h-full w-full"></canvas>
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,var(--color-canvas)_85%)]"></div>
+</div>
+
+<script>
+  type Node = { x: number; y: number; vx: number; vy: number; r: number; c: string };
+
+  function start(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return () => {};
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const colors = ['#1769e0', '#0b8f83', '#7cc4ff'];
+    const LINK = 140;
+    const FRAME_MS = 1000 / 30;
+
+    let w = 0, h = 0, dpr = 1;
+    let nodes: Node[] = [];
+    let raf = 0, last = 0, running = false;
+    const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.min(60, Math.round((w * h) / 22000));
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.8 + 1.2,
+        c: colors[Math.floor(Math.random() * colors.length)],
+      }));
+      draw();
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      pointer.x += (pointer.tx - pointer.x) * 0.06;
+      pointer.y += (pointer.ty - pointer.y) * 0.06;
+      const ox = pointer.x * 8, oy = pointer.y * 8;
+
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+          if (d < LINK) {
+            ctx.strokeStyle = `rgba(23,105,224,${0.18 * (1 - d / LINK)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x + ox, a.y + oy);
+            ctx.lineTo(b.x + ox, b.y + oy);
+            ctx.stroke();
+          }
+        }
+      }
+      for (const n of nodes) {
+        ctx.fillStyle = n.c;
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.arc(n.x + ox, n.y + oy, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    const tick = (now: number) => {
+      if (!running) return;
+      raf = requestAnimationFrame(tick);
+      if (now - last < FRAME_MS) return;
+      last = now;
+      for (const n of nodes) {
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < -20 || n.x > w + 20) n.vx *= -1;
+        if (n.y < -20 || n.y > h + 20) n.vy *= -1;
+      }
+      draw();
+    };
+
+    const play = () => {
+      if (reduce || running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const pause = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    const onPointer = (e: PointerEvent) => {
+      pointer.tx = e.clientX / window.innerWidth - 0.5;
+      pointer.ty = e.clientY / window.innerHeight - 0.5;
+    };
+    const onVisibility = () => (document.hidden ? pause() : visible && play());
+
+    let visible = true;
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      visible && !document.hidden ? play() : pause();
+    });
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    io.observe(canvas);
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      pause();
+      ro.disconnect();
+      io.disconnect();
+      window.removeEventListener('pointermove', onPointer);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }
+
+  let stop: (() => void) | undefined;
+  document.addEventListener('astro:page-load', () => {
+    stop?.();
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-network]');
+    stop = canvas ? start(canvas) : undefined;
+  });
+</script>

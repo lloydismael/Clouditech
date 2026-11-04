@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Layout title="Page not found | Clouditech" description="The page you were looking for could not be found." noindex>
+  <section class="bg-aurora grid min-h-[80vh] place-items-center px-5 pt-24 text-center">
+    <div>
+      <p class="eyebrow">Error 404</p>
+      <h1 class="mt-5 text-5xl font-extrabold sm:text-6xl">This route isn’t deployed.</h1>
+      <p class="mx-auto mt-5 max-w-md text-lg text-muted">The page may have moved during our redesign. Let’s get you back on track.</p>
+      <div class="mt-9 flex flex-wrap justify-center gap-3">
+        <a href="/" class="btn btn-primary">Back to home <Icon name="arrowRight" /></a>
+        <a href="/projects/" class="btn btn-secondary">See projects</a>
+      </div>
+    </div>
+  </section>
+</Layout>
