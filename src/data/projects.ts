@@ -158,4 +158,31 @@ export const projects: Project[] = [
     featured: true,
     accent: '#c2410c',
   },
+  {
+    slug: 'pesopath',
+    title: 'PesoPath',
+    category: 'Personal finance app',
+    services: ['azure-devops'],
+    outcome: 'Track spending, manage installments, and plan debt payments in one app that works offline.',
+    highlight: 'Offline budgeting & debt planning',
+    stack: ['JavaScript', 'Progressive Web App', 'Browser storage', 'Azure Static Web Apps'],
+    problem:
+      'When spending, bills, and debts are tracked separately, it is hard to see what is left to spend or decide which debt to pay first.',
+    solution: [
+      'Combined transactions, monthly budgets, upcoming bills, and installments in one dashboard',
+      'Added debt payoff projections for the snowball and avalanche methods',
+      'Made the app installable and usable offline, with financial records stored in the browser',
+    ],
+    results: [
+      'Monthly spending and upcoming payments are visible together',
+      'Users can compare payoff timelines before deciding which debt to prioritize',
+      'Financial records can be reviewed offline without uploading them',
+    ],
+    before: ['Separate spending and bill records', 'Manual checks for installment due dates', 'Rough payoff estimates'],
+    after: ['One dashboard for spending and bills', 'Upcoming installment payments at a glance', 'Payoff projections by strategy'],
+    url: 'https://pesopath.clouditechsolution.com/',
+    image: '/assets/projects/pesopath.webp',
+    featured: false,
+    accent: '#15803d',
+  },
 ];
